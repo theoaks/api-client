@@ -1,3 +1,4 @@
+import './src/index'
 
 declare module "theoaksoft-api-client" {
     export = ApiClient;
