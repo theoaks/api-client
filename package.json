@@ -1,6 +1,6 @@
 {
   "name": "theoaksoft-api-client",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Javascript Client for TheOakSoft REST Framework",
   "main": "index.js",
   "scripts": {
