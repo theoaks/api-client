@@ -24,7 +24,7 @@ interface ApiClientStatic {
         action: string,
         options: {
             method: string,
-            data: any
+            data: Record<string, any>
         }
     ): Promise<ApiResponse>;
 

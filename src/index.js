@@ -1,42 +1,58 @@
-var HTTP_METHODS = {
-    get: "GET",
-    post: "POST",
-    put: "PUT",
-    delete: "DELETE"
-};
+(function (root, factory) {
+    "use strict"
+    if (typeof define === 'function' && define.amd) {
+        // AMD
+        define(['lodash'], factory);
+    } else if (typeof exports === 'object') {
+        // CommonJS
+        module.exports = factory(require('lodash'));
+    } else {
+        // Browser globals (Note: root is window)
+        if (typeof root._ === 'undefined') {
+            throw Error('ApiClient requires lodash')
+        }
 
-function beforeUnload(ev) {
-    var _message = "There's a server connection currently active. If you close this window, you will lose the progress made";
-    ev.returnValue = _message;
-
-    return _message;
-}
-
-var fingerPrintCallback = function () {
-    Fingerprint2.getV18(function (device_id) {
-        var expiryDate = new Date();
-        expiryDate.setFullYear(expiryDate.getFullYear() + 10);
-        document.cookie = "__deviceVerificationId=" + device_id + ";expires=" + expiryDate.toUTCString();
-    })
-};
-
-if (window.requestIdleCallback) {
-    requestIdleCallback(fingerPrintCallback);
-} else {
-    setTimeout(fingerPrintCallback, 500)
-}
-
-var OaksEncryptor = (function ($) {
+        root.returnExports = factory(root._);
+    }
+})(this, function (_) {
     "use strict";
 
-    var oEnc = function (baseUrl, authToken, publicKey) {
+    var HTTP_METHODS = {
+        get: "GET",
+        post: "POST",
+        put: "PUT",
+        delete: "DELETE"
+    };
+
+    function beforeUnload(ev) {
+        var _message = "There's a server connection currently active. If you close this window, you will lose the progress made";
+        ev.returnValue = _message;
+
+        return _message;
+    }
+
+    var fingerPrintCallback = function () {
+        Fingerprint2.getV18(function (device_id) {
+            var expiryDate = new Date();
+            expiryDate.setFullYear(expiryDate.getFullYear() + 10);
+            document.cookie = "__deviceVerificationId=" + device_id + ";expires=" + expiryDate.toUTCString();
+        })
+    };
+
+    if (window.requestIdleCallback) {
+        requestIdleCallback(fingerPrintCallback);
+    } else {
+        setTimeout(fingerPrintCallback, 500)
+    }
+
+    var ApiClient = function (baseUrl, authToken, publicKey) {
         var self = this;
         self.apiUrlBase = baseUrl;
         self.authToken = authToken;
         self.publicKey = publicKey;
     };
 
-    oEnc.prototype = {
+    ApiClient.prototype = {
         apiUrlBase: "",
         authToken: null,
         appId: null,
@@ -130,7 +146,7 @@ var OaksEncryptor = (function ($) {
             var self = this, url = self.buildUrl(module, action);
 
             window.onbeforeunload = beforeUnload;
-            var opts = $.extend(true, {
+            var opts = _.defaultsDeep({
                 method: "post",
                 data: null
             }, options);
@@ -213,12 +229,12 @@ var OaksEncryptor = (function ($) {
             return self.apiUrlBase + "/" + module + "/" + action;
         },
         isFunction: function (callable) {
-            return $.type(callable) === "function";
+            return typeof callable === "function";
         },
         isObject: function (object) {
-            return $.type(object) === "object";
+            return typeof object === "object";
         }
     };
 
-    return oEnc;
-})(jQuery);
+    return ApiClient;
+});
