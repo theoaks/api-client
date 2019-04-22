@@ -1,0 +1,22 @@
+{
+  "name": "theoaksoft-api-client",
+  "version": "1.0.0",
+  "description": "Javascript Client for TheOakSoft REST Framework",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/theoaks/api-client.git"
+  },
+  "author": "Babatunde Ojerinde",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/theoaks/api-client/issues"
+  },
+  "homepage": "https://github.com/theoaks/api-client#readme",
+  "dependencies": {
+    "lodash": "^4.17.11"
+  }
+}
