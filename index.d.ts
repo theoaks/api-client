@@ -1,4 +1,8 @@
 
+declare module "theoaksoft-api-client" {
+    export = ApiClient;
+}
+
 declare module "api-client" {
     export = ApiClient;
 }
