@@ -146,10 +146,10 @@
             var self = this, url = self.buildUrl(module, action);
 
             global.onbeforeunload = beforeUnload;
-            var opts = _.defaultsDeep({
+            var opts = _.defaultsDeep(options, {
                 method: "post",
                 data: null
-            }, options);
+            });
 
             return new Promise(function (resolve, reject) {
                 var xhr = new XMLHttpRequest();
