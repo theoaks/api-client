@@ -39,7 +39,7 @@
         })
     };
 
-    if (window.requestIdleCallback) {
+    if (global.requestIdleCallback) {
         requestIdleCallback(fingerPrintCallback);
     } else {
         setTimeout(fingerPrintCallback, 500)
@@ -72,7 +72,7 @@
             return new Promise(function (resolve, reject) {
                 var method = formElement.method || HTTP_METHODS.post, formData = formElement;
                 var type = typeof formData;
-                window.onbeforeunload = beforeUnload;
+                global.onbeforeunload = beforeUnload;
 
                 if (!(formData instanceof FormData)) {
                     formData = new FormData(formElement);
@@ -96,7 +96,7 @@
                 var xhr = new XMLHttpRequest();
                 xhr.onload = function () {
                     var nonDecode = xhr.responseText;
-                    window.onbeforeunload = null;
+                    global.onbeforeunload = null;
                     var response = JSON.parse(nonDecode);
                     if (this.status >= 200 && this.status < 300) {
                         resolve(response);
@@ -145,7 +145,7 @@
         send: function (module, action, options) {
             var self = this, url = self.buildUrl(module, action);
 
-            window.onbeforeunload = beforeUnload;
+            global.onbeforeunload = beforeUnload;
             var opts = _.defaultsDeep({
                 method: "post",
                 data: null
@@ -160,7 +160,7 @@
 
                 xhr.onload = function () {
                     var nonDecode = xhr.responseText;
-                    window.onbeforeunload = null;
+                    global.onbeforeunload = null;
                     // var resp = self.decrypt(nonDecode);
                     try {
                         var response = JSON.parse(nonDecode);
