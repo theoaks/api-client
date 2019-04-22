@@ -2,19 +2,19 @@
     "use strict"
     if (typeof define === 'function' && define.amd) {
         // AMD
-        define(['lodash'], factory);
+        define(['lodash', 'fingerprintjs2'], factory);
     } else if (typeof exports === 'object') {
         // CommonJS
-        module.exports = factory(require('lodash'));
+        module.exports = factory(require('lodash'), require('fingerprintjs2'));
     } else {
         // Browser globals (Note: root is window)
         if (typeof root._ === 'undefined') {
             throw Error('ApiClient requires lodash')
         }
 
-        root.returnExports = factory(root._);
+        root.returnExports = factory(root._, root.fingerprintjs2);
     }
-})(this, function (_) {
+})(this, function (_, fingerprintjs2) {
     "use strict";
 
     var HTTP_METHODS = {
@@ -32,7 +32,7 @@
     }
 
     var fingerPrintCallback = function () {
-        Fingerprint2.getV18(function (device_id) {
+        fingerprintjs2.getV18(function (device_id) {
             var expiryDate = new Date();
             expiryDate.setFullYear(expiryDate.getFullYear() + 10);
             document.cookie = "__deviceVerificationId=" + device_id + ";expires=" + expiryDate.toUTCString();
@@ -40,9 +40,9 @@
     };
 
     if (global.requestIdleCallback) {
-        requestIdleCallback(fingerPrintCallback);
+        global.requestIdleCallback(fingerPrintCallback);
     } else {
-        setTimeout(fingerPrintCallback, 500)
+        global.setTimeout(fingerPrintCallback, 500)
     }
 
     var ApiClient = function (baseUrl, authToken, publicKey) {
