@@ -12,7 +12,7 @@
             throw Error('ApiClient requires lodash')
         }
 
-        root.returnExports = factory(root._, root.fingerprintjs2);
+        root.ApiClient = factory(root._, root.fingerprintjs2);
     }
 })(this, function (_, fingerprintjs2) {
     "use strict";
@@ -46,18 +46,21 @@
     }
 
     var ApiClient = function (baseUrl, authToken, publicKey) {
-        var self = this;
-        self.apiUrlBase = baseUrl;
-        self.authToken = authToken;
-        self.publicKey = publicKey;
+        this.apiUrlBase = baseUrl;
+        this.authToken = authToken;
+        this.publicKey = publicKey;
+        this.serverTimeout = null;
     };
 
     ApiClient.prototype = {
-        apiUrlBase: "",
-        authToken: null,
         appId: null,
         deviceId: null,
-        publicKey: null,
+        /**
+         * @param {number} timeout 
+         */
+        setServerTimeout(timeout) {
+            this.serverTimeout = Number(timeout) !== NaN ? Number(timeout) : null
+        },
         /**
          *
          * @param {string} module
@@ -142,8 +145,8 @@
          * @param {object} options
          * @param options.data
          */
-        send: function (module, action, options) {
-            var self = this, url = self.buildUrl(module, action);
+        send(module, action, options) {
+            var self = this, url = this.buildUrl(module, action);
 
             global.onbeforeunload = beforeUnload;
             var opts = _.defaultsDeep(options, {
@@ -151,33 +154,31 @@
                 data: null
             });
 
-            return new Promise(function (resolve, reject) {
+            return new Promise((resolve, reject) => {
                 var xhr = new XMLHttpRequest();
                 var data = opts.data;
-                if (self.publicKey != null && opts.data != null) {
-                    // data = self.encrypt(opts.data);
-                }
 
-                xhr.onload = function () {
+                xhr.onload = () => {
                     var nonDecode = xhr.responseText;
                     global.onbeforeunload = null;
                     // var resp = self.decrypt(nonDecode);
                     try {
                         var response = JSON.parse(nonDecode);
-                        if (this.status >= 200 && this.status < 300) {
+                        if (xhr.status >= 200 && xhr.status < 300) {
                             resolve(response);
                         } else {
+                            response.statusCode = xhr.statusCode
                             reject(response);
                         }
                     } catch (e) {
-                        console.log(e);
                         reject({
                             success: false,
-                            message: e
+                            message: e,
+                            statusCode: xhr.statusCode
                         });
                     }
                 };
-                xhr.onerror = function () {
+                xhr.onerror = () => {
                     try {
                         var response = JSON.parse(xhr.statusText);
                     } catch (error) {
@@ -188,8 +189,19 @@
                             data: null
                         };
                     }
+                    response.statusCode = xhr.statusCode
+
                     reject(response);
                 };
+
+                if (this.serverTimeout > 0) {
+                    xhr.ontimeout = () => {
+                        reject({
+                            success: false,
+                            message: `The server did not respond on time. You might need to try again later.`
+                        })
+                    }
+                }
 
                 if (opts.method.toLowerCase() === HTTP_METHODS.get.toLowerCase()) {
                     var query = [];
@@ -206,8 +218,8 @@
 
                 xhr.open(opts.method.toUpperCase(), url);
 
-                if (self.authToken != null) {
-                    xhr.setRequestHeader("User-Auth-Token", self.authToken);
+                if (this.authToken != null) {
+                    xhr.setRequestHeader("User-Auth-Token", this.authToken);
                 }
                 xhr.setRequestHeader("Accept", "application/json");
                 xhr.setRequestHeader("Oaks-Request-Source", "xmlhttprequest");
@@ -215,23 +227,28 @@
                 xhr.setRequestHeader("Oaks-Origin-Url", location.href);
                 xhr.withCredentials = true;
 
-                if (opts.method.toLowerCase() === "get") {
-                    xhr.send();
-                } else {
-                    xhr.setRequestHeader("Content-Type", "application/json");
-                    xhr.send(JSON.stringify(data));
+                try {
+                    if (opts.method.toLowerCase() === "get") {
+                        xhr.send();
+                    } else {
+                        xhr.setRequestHeader("Content-Type", "application/json");
+                        xhr.send(JSON.stringify(data));
+                    }
+                } catch (e) {
+                    reject({
+                        success: false,
+                        message: "Unable to connect to the server."
+                    })
                 }
             });
         },
-        buildUrl: function (module, action) {
-            var self = this;
-
-            return self.apiUrlBase + "/" + module + "/" + action;
+        buildUrl(module, action) {
+            return this.apiUrlBase + "/" + module + "/" + action;
         },
-        isFunction: function (callable) {
+        isFunction(callable) {
             return typeof callable === "function";
         },
-        isObject: function (object) {
+        isObject(object) {
             return typeof object === "object";
         }
     };
