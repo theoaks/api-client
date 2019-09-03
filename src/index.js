@@ -13,7 +13,7 @@
         }
 
         root.ApiClient = factory(root, root._, root.fingerprintjs2);
-        root.utils = root.ApiClient
+        root.OaksEncryptor = root.ApiClient // Backward compatibility
     }
 })(typeof window !== 'undefined' ? window : this, function (global, _, fingerprintjs2) {
     "use strict";
