@@ -1,6 +1,6 @@
 {
   "name": "theoaksoft-api-client",
-  "version": "1.0.9",
+  "version": "1.1.1",
   "description": "Javascript Client for TheOakSoft REST Framework",
   "main": "index.js",
   "scripts": {
@@ -17,7 +17,6 @@
   },
   "homepage": "https://github.com/theoaks/api-client#readme",
   "dependencies": {
-    "fingerprintjs2": "^2.1.0",
     "lodash": "^4.17.15"
   },
   "devDependencies": {
