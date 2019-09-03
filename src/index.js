@@ -3,18 +3,19 @@
     if (typeof define === 'function' && define.amd) {
         // AMD
         define(['lodash', 'fingerprintjs2'], factory);
-    } else if (typeof exports === 'object') {
+    } else if (typeof module === 'object' && typeof module.exports === 'object') {
         // CommonJS
-        module.exports = factory(require('lodash'), require('fingerprintjs2'));
+        module.exports = factory(root, require('lodash'), require('fingerprintjs2'));
     } else {
         // Browser globals (Note: root is window)
         if (typeof root._ === 'undefined') {
             throw Error('ApiClient requires lodash')
         }
 
-        root.ApiClient = factory(root._, root.fingerprintjs2);
+        root.ApiClient = factory(root, root._, root.fingerprintjs2);
+        root.utils = root.ApiClient
     }
-})(this, function (_, fingerprintjs2) {
+})(typeof window !== 'undefined' ? window : this, function (global, _, fingerprintjs2) {
     "use strict";
 
     var HTTP_METHODS = {
@@ -123,7 +124,7 @@
                 xhr.open(method.toUpperCase(), url);
 
                 if (self.authToken != null) {
-                    xhr.setRequestHeader("User-Auth-Token", self.authToken);
+                    xhr.setRequestHeader("Authorization", `Bearer ${self.authToken}`);
                 }
                 xhr.setRequestHeader("Accept", "application/json");
                 xhr.setRequestHeader("Oaks-Request-Source", "xmlhttprequest");
@@ -219,7 +220,7 @@
                 xhr.open(opts.method.toUpperCase(), url);
 
                 if (this.authToken != null) {
-                    xhr.setRequestHeader("User-Auth-Token", this.authToken);
+                    xhr.setRequestHeader("Authorization", `Bearer ${self.authToken}`);
                 }
                 xhr.setRequestHeader("Accept", "application/json");
                 xhr.setRequestHeader("Oaks-Request-Source", "xmlhttprequest");

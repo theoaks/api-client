@@ -1,6 +1,6 @@
 {
   "name": "theoaksoft-api-client",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Javascript Client for TheOakSoft REST Framework",
   "main": "index.js",
   "scripts": {
@@ -21,6 +21,10 @@
     "lodash": "^4.17.15"
   },
   "devDependencies": {
+    "grunt": "^1.0.4",
+    "grunt-contrib-jshint": "^2.1.0",
+    "grunt-contrib-uglify": "^4.0.1",
+    "grunt-contrib-uglify-es": "github:gruntjs/grunt-contrib-uglify#harmony",
     "jest": "^24.9.0"
   }
 }
