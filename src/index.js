@@ -2,7 +2,9 @@
     "use strict"
     if (typeof define === 'function' && define.amd) {
         // AMD
-        define(['lodash'], factory);
+        define(['lodash'], function (lodash) {
+            factory(root, lodash)
+        });
     } else if (typeof module === 'object' && typeof module.exports === 'object') {
         // CommonJS
         module.exports = factory(root, require('lodash'));
@@ -193,6 +195,10 @@
                 if (opts.method.toLowerCase() === HTTP_METHODS.get.toLowerCase()) {
                     var query = [];
                     for (var key in data) {
+                        if (data[key] === null) {
+                            continue
+                        }
+
                         if (data.hasOwnProperty(key)) {
                             query.push(encodeURIComponent(key) + "=" + encodeURIComponent(data[key]));
                         }
