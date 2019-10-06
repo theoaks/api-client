@@ -1,13 +1,10 @@
 (function (root, factory) {
     "use strict"
-    if (typeof define === 'function' && define.amd) {
-        // AMD
-        define(['lodash'], function (lodash) {
-            factory(root, lodash)
-        });
-    } else if (typeof module === 'object' && typeof module.exports === 'object') {
+    if (typeof exports === 'object' && typeof module !== 'undefined') {
         // CommonJS
-        module.exports = factory(root, require('lodash'));
+        module.exports = factory(root, require('lodash'))
+    } else if (typeof define === 'function' && define.amd) {
+        define([root, 'lodash'], factory)
     } else {
         // Browser globals (Note: root is window)
         if (typeof root._ === 'undefined') {
@@ -17,7 +14,7 @@
         root.ApiClient = factory(root, root._);
         root.OaksEncryptor = root.ApiClient // Backward compatibility
     }
-})(typeof window !== 'undefined' ? window : this, function (global, lodash) {
+}(typeof window !== 'undefined' ? window : this, function (global, lodash) {
     "use strict";
 
     var HTTP_METHODS = {
@@ -34,18 +31,16 @@
         return _message;
     }
 
-    var ApiClient = function (baseUrl, authToken, publicKey) {
+    function ApiClient(baseUrl, authToken, publicKey) {
         this.apiUrlBase = baseUrl;
         this.authToken = authToken;
-        this.publicKey = publicKey;
-        this.serverTimeout = null;
     };
 
     ApiClient.prototype = {
         appId: null,
         deviceId: null,
         /**
-         * @param {number} timeout 
+         * @param {number} timeout
          */
         setServerTimeout(timeout) {
             this.serverTimeout = Number(timeout) !== NaN ? Number(timeout) : null
@@ -245,6 +240,6 @@
             return typeof object === "object";
         }
     };
-
+    console.log(ApiClient)
     return ApiClient;
-});
+}));
