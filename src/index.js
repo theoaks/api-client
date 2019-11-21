@@ -17,7 +17,7 @@
 }(typeof window !== 'undefined' ? window : this, function (global, lodash) {
     "use strict";
 
-    var HTTP_METHODS = {
+    const HTTP_METHODS = {
         get: "GET",
         post: "POST",
         put: "PUT",
