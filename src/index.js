@@ -149,17 +149,17 @@
                     try {
                         var response = JSON.parse(nonDecode);
                         if (xhr.status >= 200 && xhr.status < 300) {
-                            resolve(response);
+                            resolve(response, xhr);
                         } else {
                             response.statusCode = xhr.statusCode
-                            reject(response);
+                            reject(response, xhr);
                         }
                     } catch (e) {
                         reject({
                             success: false,
                             message: e,
                             statusCode: xhr.statusCode
-                        });
+                        }, xhr);
                     }
                 };
                 xhr.onerror = () => {
@@ -175,7 +175,7 @@
                     }
                     response.statusCode = xhr.statusCode
 
-                    reject(response);
+                    reject(response, xhr);
                 };
 
                 if (this.serverTimeout > 0) {
@@ -183,7 +183,7 @@
                         reject({
                             success: false,
                             message: `The server did not respond on time. You might need to try again later.`
-                        })
+                        }, xhr)
                     }
                 }
 
@@ -225,7 +225,8 @@
                 } catch (e) {
                     reject({
                         success: false,
-                        message: "Unable to connect to the server."
+                        message: "Unable to connect to the server.",
+                        statusCode: xhr.statusCode
                     })
                 }
             });
