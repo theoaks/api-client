@@ -241,6 +241,6 @@
             return typeof object === "object";
         }
     };
-    console.log(ApiClient)
+    
     return ApiClient;
 }));
