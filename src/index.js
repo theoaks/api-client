@@ -1,18 +1,18 @@
 (function (root, factory) {
-    "use strict"
+    "use strict";
     if (typeof exports === 'object' && typeof module !== 'undefined') {
         // CommonJS
-        module.exports = factory(root, require('lodash'))
+        module.exports = factory(root, require('lodash'));
     } else if (typeof define === 'function' && define.amd) {
-        define([root, 'lodash'], factory)
+        define([root, 'lodash'], factory);
     } else {
         // Browser globals (Note: root is window)
         if (typeof root._ === 'undefined') {
-            throw Error('ApiClient requires lodash')
+            throw Error('ApiClient requires lodash');
         }
 
         root.ApiClient = factory(root, root._);
-        root.OaksEncryptor = root.ApiClient // Backward compatibility
+        root.OaksEncryptor = root.ApiClient; // Backward compatibility
     }
 }(typeof window !== 'undefined' ? window : this, function (global, lodash) {
     "use strict";
@@ -34,7 +34,7 @@
     function ApiClient(baseUrl, authToken, publicKey) {
         this.apiUrlBase = baseUrl;
         this.authToken = authToken;
-    };
+    }
 
     ApiClient.prototype = {
         appId: null,
@@ -43,7 +43,7 @@
          * @param {number} timeout
          */
         setServerTimeout(timeout) {
-            this.serverTimeout = Number(timeout) !== NaN ? Number(timeout) : null
+            this.serverTimeout = !isNaN(Number(timeout)) ? Number(timeout) : null;
         },
         /**
          *
@@ -191,7 +191,7 @@
                     var query = [];
                     for (var key in data) {
                         if (data[key] === null) {
-                            continue
+                            continue;
                         }
 
                         if (data.hasOwnProperty(key)) {
@@ -235,12 +235,12 @@
             return this.apiUrlBase + "/" + module + "/" + action;
         },
         isFunction(callable) {
-            return typeof callable === "function";
+            return _.isFunction(callable);
         },
         isObject(object) {
-            return typeof object === "object";
+            return _.isObject(object);
         }
     };
-    
+
     return ApiClient;
 }));
