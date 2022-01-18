@@ -4,9 +4,7 @@
   "description": "Javascript Client for TheOakSoft REST Framework",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack --mode development",
-    "build": "webpack --mode production",
-    "start": "webpack-dev-server.cmd --mode development",
+    "build": "babel src -d src",
     "test": "jest"
   },
   "repository": {
@@ -20,36 +18,12 @@
   },
   "homepage": "https://github.com/theoaks/api-client#readme",
   "dependencies": {
-    "@babel/runtime": "^7.11.2",
-    "core-js": "^3.6.5",
-    "es6-symbol": "^3.1.3",
-    "lodash": "^4.17.20"
+    "lodash": "^4.17.21"
   },
+  "packageManager": "yarn@3.1.1",
   "devDependencies": {
-    "@babel/core": "^7.11.4",
-    "@babel/preset-env": "^7.11.0",
-    "babel-loader": "^8.1.0",
-    "jest": "^24.9.0",
-    "uglifyjs-webpack-plugin": "^2.2.0",
-    "webpack": "^4.44.1",
-    "webpack-cli": "^3.3.12",
-    "webpack-dev-server": "^3.11.0"
-  },
-  "babel": {
-    "presets": [
-      [
-        "@babel/preset-env",
-        {
-          "useBuiltIns": "usage",
-          "corejs": "3",
-          "targets": {
-            "browsers": [
-              "last 5 versions",
-              "ie >= 8"
-            ]
-          }
-        }
-      ]
-    ]
+    "@babel/cli": "^7.16.8",
+    "@babel/core": "^7.16.7",
+    "@babel/preset-env": "^7.16.8"
   }
 }
